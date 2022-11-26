@@ -1,0 +1,51 @@
+﻿@page
+@using ToDoList.Models
+@model IndexModel
+@{
+    ViewData["Title"] = "To Do List";
+}
+
+@functions{
+    public string handleEnum(string index)
+    {
+        return index == "0" ? "High" : index == "1" ? "Medium" : "Low";
+    }
+    public string GetClassPriority(string priority)
+    {
+        return priority == "0" ? "red": priority == "1" ? "orange" : "green";
+    }
+}
+
+<div class="text-center">
+    <h1 class="display-4">ASP.NET / Razor Pages To Do List</h1>
+    <form method="post" class="todo-form">
+        <div class="row">
+            <div asp-validation-summary="All"></div>
+        </div>
+        <div class="form-body">
+            <label asp-for="NewTodo.Name">Name</label>
+            <input type="text" asp-for="NewTodo.Name">
+            <label asp-for="NewTodo.Details">Details</label>
+            <input type="text" asp-for="NewTodo.Details">
+            <label asp-for="NewTodo.Priority">Priority</label>
+            <select asp-for="NewTodo.Priority" asp-items="Html.GetEnumSelectList<Priority>()"></select>
+            <button class="btn btn-primary">Add</button>
+        </div>
+    </form>
+    <section class="todo-results">
+        @foreach (var todo in Model.Todos)
+        {
+            <div class="todo-list-item">
+                <h2>@todo.Name</h2>
+                <h4>@todo.date_created</h4>
+                <h5 class="@GetClassPriority(todo.Priority)">@handleEnum(todo.Priority)</h5>
+                <p>@todo.Details</p>
+                <div class="btns">
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@todo.Id">
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </section>
+</div>
